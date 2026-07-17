@@ -2,7 +2,6 @@
 import os
 from dotenv import load_dotenv
 from typing import Set
-from pathlib import Path
 
 # 加载环境变量
 load_dotenv()

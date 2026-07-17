@@ -1,4 +1,5 @@
 # app/main.py
+import os
 import sys
 import io
 import logging
@@ -24,6 +25,35 @@ logger = logging.getLogger(__name__)
 settings.validate()
 
 # 创建 FastAPI 应用
+ENV = os.getenv("ENV", "dev")  # 如果不设置ENV，默认就是dev
+env_name = ""
+
+# 根据环境决定是否开启文档
+if ENV == "production":
+    # 生产环境：关闭所有文档
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version=settings.VERSION,
+        description="AI智能体-综合服务",
+        docs_url=None,        # 关闭 /docs
+        redoc_url=None,       # 关闭 /redoc
+        openapi_url=None      # 关闭 /openapi.json（这个一定要关！）
+    )
+    env_name = "正式环境"
+else:
+    # 开发/测试环境：正常开启文档
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version=settings.VERSION,
+        description="AI智能体-综合服务",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json"
+    )
+    env_name = "测试环境"
+
+
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
@@ -65,7 +95,8 @@ async def root():
 async def startup_event():
     """应用启动时执行"""
     logger.info(f"{settings.PROJECT_NAME} v{settings.VERSION} 启动成功")
-    logger.info(f"API 文档地址: http://{settings.HOST}:{settings.PORT}/docs")
+    logger.info(f"当前环境 {env_name}")
+    logger.info(f"API 文档地址: http://{settings.HOST}:{settings.PORT}/docs 注意正式环境已关闭文档功能，只能在测试服查阅")
     logger.info(f"支持的格式: {settings.ALLOWED_EXTENSIONS}")
     logger.info(f"最大并发数: {settings.OCR_MAX_WORKERS}")
 
