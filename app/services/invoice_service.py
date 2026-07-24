@@ -51,7 +51,7 @@ class InvoiceService:
 
             metadata = InvoiceMetadata(
                 filename=filename,
-                file_type=filename.lower().split('.')[-1],
+                file_type=filename.lower().split(".")[-1],
                 index=index,
                 ocr_text_preview=ocr_text[:200] + "..." if len(ocr_text) > 200 else ocr_text,
                 pre_classified_type=pre_type,

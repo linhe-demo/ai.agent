@@ -17,6 +17,11 @@ class Settings:
     DEEPSEEK_TIMEOUT: int = int(os.getenv("DEEPSEEK_TIMEOUT", "30"))
     DEEPSEEK_TEMPERATURE: float = float(os.getenv("DEEPSEEK_TEMPERATURE", "0.1"))
 
+    # Coze 配置
+    COZE_API_KEY: str = os.getenv("COZE_API_KEY", "")
+    COZE_API_URL: str = os.getenv("COZE_API_URL", "")
+    COZE_MODEL_ID: str = os.getenv("COZE_MODEL_ID", "")
+
     # 服务配置
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", "8000"))
@@ -35,6 +40,17 @@ class Settings:
     # 日志配置
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
+    #REDIS 配置
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "127.0.0.1" )
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
+    REDIS_DB: int = int(os.getenv("REDIS_DB", 6))
+    REDIS_PASSWORD: str = int(os.getenv("REDIS_PASSWORD", ""))
+    REDIS_RULE_KEY: str = os.getenv("REDIS_RULE_KEY", "AI:SERVICE:")
+
+    #CRM 配置
+    CRM_ZY_URL: str = os.getenv("CRM_ZY_URL", "")
+    CRM_ZY_AUTHORIZATION: str = os.getenv("CRM_ZY_AUTHORIZATION", "")
+
     # API 配置
     API_V1_STR: str = "/api"
     PROJECT_NAME: str = "AI智能体服务"
@@ -47,7 +63,7 @@ class Settings:
 
     def is_allowed_file(self, filename: str) -> bool:
         """检查文件是否允许上传"""
-        ext = filename.lower().split('.')[-1]
+        ext = filename.lower().split(".")[-1]
         return ext in self.allowed_extensions_set
 
     def validate(self) -> bool:

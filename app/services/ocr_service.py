@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class OCRService:
     """OCR 识别服务"""
 
-    def __init__(self, lang: str = 'ch'):
+    def __init__(self, lang: str = "ch"):
         """初始化 OCR 服务"""
         try:
             self.ocr = PaddleOCR(lang=lang)
@@ -70,11 +70,11 @@ class OCRService:
 
     def extract_text(self, file_bytes: bytes, filename: str) -> str:
         """根据文件类型提取文字"""
-        ext = filename.lower().split('.')[-1]
+        ext = filename.lower().split(".")[-1]
 
-        if ext in ['jpg', 'jpeg', 'png', 'bmp', 'tiff']:
+        if ext in ["jpg", "jpeg", "png", "bmp", "tiff"]:
             return self.extract_from_image(file_bytes)
-        elif ext == 'pdf':
+        elif ext == "pdf":
             return self.extract_from_pdf(file_bytes)
         else:
             raise HTTPException(status_code=400, detail=f"不支持的文件格式: {ext}")

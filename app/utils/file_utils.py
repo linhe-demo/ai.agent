@@ -1,6 +1,4 @@
-# app/utils/file_utils.py
 import hashlib
-from typing import Tuple
 from fastapi import UploadFile, HTTPException
 
 
@@ -15,7 +13,7 @@ def validate_file_size(content: bytes, max_size: int) -> None:
 
 def validate_file_extension(filename: str, allowed_extensions: set) -> str:
     """验证文件扩展名"""
-    ext = filename.lower().split('.')[-1]
+    ext = filename.lower().split(".")[-1]
     if ext not in allowed_extensions:
         raise HTTPException(
             status_code=400,
@@ -31,7 +29,7 @@ def calculate_file_md5(content: bytes) -> str:
 
 def get_file_size_str(size: int) -> str:
     """获取文件大小可读字符串"""
-    for unit in ['B', 'KB', 'MB', 'GB']:
+    for unit in ["B", "KB", "MB", "GB"]:
         if size < 1024.0:
             return f"{size:.2f} {unit}"
         size /= 1024.0

@@ -2,7 +2,7 @@
 from typing import Optional, Any, Generic, TypeVar
 from pydantic import BaseModel
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class ResponseModel(BaseModel, Generic[T]):

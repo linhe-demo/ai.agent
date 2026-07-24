@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 @router.get("/health")
 async def health_check():
     """健康检查"""
-    return {"status": "healthy", "service": "invoice-recognition"}
+    return {"status": "healthy", "service": "AI-AGENT"}
 
 
 @router.post("/invoice/extract")

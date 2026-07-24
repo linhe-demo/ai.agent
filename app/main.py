@@ -2,24 +2,22 @@
 import os
 import sys
 import io
-import logging
+from app.core.logging import setup_logging, get_logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.api import invoice
+from app.api import invoice, match
+from app.pkg.redis_client import redis_client
+from app.services import coze_service
+from app.services.auto_service import auto_service
 
 # 设置编码
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
-# 配置日志
-logging.basicConfig(
-    level=getattr(logging, settings.LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
-logger = logging.getLogger(__name__)
+setup_logging()
+logger = get_logger(__name__)
 
 # 验证配置
 settings.validate()
@@ -52,16 +50,6 @@ else:
     )
     env_name = "测试环境"
 
-
-
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.VERSION,
-    description="发票识别服务 - 支持批量识别，自动区分普票和专票",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
 # 配置 CORS
 app.add_middleware(
     CORSMiddleware,
@@ -72,11 +60,8 @@ app.add_middleware(
 )
 
 # 注册路由
-app.include_router(
-    invoice.router,
-    prefix=settings.API_V1_STR,
-    tags=["发票识别"]
-)
+app.include_router(invoice.router, prefix=settings.API_V1_STR, tags=["ai-invoice"])
+app.include_router(match.router, prefix=settings.API_V1_STR, tags=["ai-match"])
 
 
 @app.get("/")
@@ -93,12 +78,12 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
+    # 启动加载需要初始化的数据
+    auto_service.init()
     """应用启动时执行"""
     logger.info(f"{settings.PROJECT_NAME} v{settings.VERSION} 启动成功")
     logger.info(f"当前环境 {env_name}")
     logger.info(f"API 文档地址: http://{settings.HOST}:{settings.PORT}/docs 注意正式环境已关闭文档功能，只能在测试服查阅")
-    logger.info(f"支持的格式: {settings.ALLOWED_EXTENSIONS}")
-    logger.info(f"最大并发数: {settings.OCR_MAX_WORKERS}")
 
 
 @app.on_event("shutdown")

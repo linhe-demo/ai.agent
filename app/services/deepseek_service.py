@@ -96,7 +96,7 @@ OCR识别文本如下：
                 return parsed_json
             except json.JSONDecodeError:
                 # 尝试提取 JSON
-                json_match = re.search(r'\{.*\}', content, re.DOTALL)
+                json_match = re.search(r"\{.*\}", content, re.DOTALL)
                 if json_match:
                     return json.loads(json_match.group())
                 else:
@@ -115,8 +115,8 @@ OCR识别文本如下：
     @staticmethod
     def classify_invoice_type(ocr_text: str) -> str:
         """预先判断发票类型（快速分类）"""
-        special_keywords = ['增值税专用发票', '专用发票', '增值税专票']
-        normal_keywords = ['增值税普通发票', '普通发票', '增值税普票', '电子普通发票']
+        special_keywords = ["增值税专用发票", "专用发票", "增值税专票"]
+        normal_keywords = ["增值税普通发票", "普通发票", "增值税普票", "电子普通发票"]
 
         for kw in special_keywords:
             if kw in ocr_text:
